@@ -62,11 +62,28 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   //Write your code here
 
   const isbn = req.params.isbn;
-  books[isbn].reviews = req.query.review;
+  const review = {
+    "username":req.session.authorization.username,
+    "review":req.query.review
+  }
+  books[isbn].reviews = review;
+  
+
   if(!req.query.review){
     return res.status(208).json({message: "Please enter a review"});
   }
   return res.status(200).send("The review for the book with ISBN "+isbn +" has been added/updated.");
+});
+
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    const isbn = req.params.isbn
+    
+    const key_aar = Object.keys(books);
+    console.log(books)
+    key_aar.filter((key) => books[key].reviews.username === req.session.authorization.username)
+    console.log(books)
+    
+    res.send("Done"+books)
 });
 
 module.exports.authenticated = regd_users;
