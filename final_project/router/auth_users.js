@@ -77,13 +77,14 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
 
 regd_users.delete("/auth/review/:isbn", (req, res) => {
     const isbn = req.params.isbn
-    
     const key_aar = Object.keys(books);
-    console.log(books)
-    key_aar.filter((key) => books[key].reviews.username === req.session.authorization.username)
-    console.log(books)
-    
-    res.send("Done"+books)
+    key_aar.filter((key) => {
+        if(books[key].reviews.username === req.session.authorization.username){
+            delete books[key].reviews.username
+            delete books[key].reviews.review
+        }
+    })
+    res.send(`Review for the ISBN ${isbn} posted by the user ${req.session.authorization.username} deleted.`)
 });
 
 module.exports.authenticated = regd_users;
